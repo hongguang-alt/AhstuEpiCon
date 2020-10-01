@@ -1,0 +1,14 @@
+.login-layout {
+    height: 100%;
+}
+
+.login-header {
+    height: 110px;
+    padding: 22px 50px;
+    background-color: #19478b;
+}
+
+.login-content {
+    padding: 30px;
+    margin-top: 50px;
+}
