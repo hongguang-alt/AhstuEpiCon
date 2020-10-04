@@ -57,11 +57,11 @@ module.exports = {
         }),
         new FriendlyErrorWebpackPlugin()
     ],
-    devServer: NODE_ENV ? {
-        contentBase: './deist',
+    devServer: NODE_ENV ? {} : {
+        contentBase: './dist',
         hot: true,
         stats: 'errors-only'
-    } : {},
+    },
     stats: 'errors-only',
-    devtool: NODE_ENV ? 'inline-source-map/eval' : "none"
+    devtool: NODE_ENV ? "none" : "cheap-module-eval-source-map"
 }

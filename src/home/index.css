@@ -1,3 +1,4 @@
-.content-sider {}
-
-.content-content {}
+.content-content {
+    padding: 20px;
+    overflow: auto;
+}

@@ -56,7 +56,7 @@ class Login extends React.Component {
             this.setState({ errorFont: "账号或者密码不能为空" })
             return
         }
-        this.props.history.push('/home')
+        this.props.history.push('/home/worldmap')
     }
     render() {
         const { errorFont, user, password } = this.state
