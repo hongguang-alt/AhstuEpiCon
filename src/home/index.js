@@ -2,6 +2,7 @@ import React from 'react'
 import { Layout, Menu, Dropdown } from 'antd';
 const { Header, Sider, Content, Footer } = Layout;
 const { SubMenu } = Menu;
+import jwt from 'jsonwebtoken'
 import WorldMap from '../page/worldmap'
 import AnkeMap from '../page/ankemap'
 import VacFind from '../page/vacfind'
@@ -9,7 +10,9 @@ import VacSub from '../page/vacsub'
 import Leave from '../page/leave'
 import Approval from '../page/approval'
 import PersonInfo from '../page/personinfo'
-
+import AnkeMapManage from '../page/ankemapmanage'
+import ShowEmail from '../page/showemail'
+import { secret } from '../config/config'
 import './index.css'
 import {
     BarChartOutlined,
@@ -45,20 +48,60 @@ class Home extends React.Component {
         super()
         this.state = {
             collapsed: false,
+            role: 'student'
         }
     }
+
+    componentDidMount() {
+        this.getManage()
+    }
+
+
+    getManage = () => {
+        let token = window.localStorage.getItem('token')
+        let { admin } = jwt.verify(token, secret)
+        this.setState({
+            role: admin
+        })
+    }
+
     onCollapse = collapsed => {
         this.setState({ collapsed })
     }
 
+
+    //退出
+    logout = () => {
+        window.localStorage.removeItem('token')
+        this.props.history.push('/')
+    }
+
     getContent = key => {
+        const { role } = this.state
         switch (key) {
             case 'worldmap': return <WorldMap />
             case 'ankemap': return <AnkeMap />
             case 'vacfind': return <VacFind />
             case 'vacsub': return <VacSub />
             case 'leave': return <Leave />
-            case 'approval': return <Approval />
+            case 'ankemapmanage':
+                if (role === 'admin') {
+                    return <AnkeMapManage />
+                } else {
+                    return <div>404</div>
+                }
+            case 'approval':
+                if (role === 'admin') {
+                    return <Approval />
+                } else {
+                    return <div>404</div>
+                }
+            case 'showemail':
+                if (role === 'admin') {
+                    return <ShowEmail />
+                } else {
+                    return <div>404</div>
+                }
             case 'personinfo': return <PersonInfo />
             default: return <div>404</div>
         }
@@ -70,10 +113,11 @@ class Home extends React.Component {
 
     render() {
         const { key } = this.props.match.params
+        const { role } = this.state
         const menu = (
             <Menu>
                 <Menu.Item>
-                    <div>退出</div>
+                    <div onClick={() => this.logout()}>退出</div>
                 </Menu.Item>
             </Menu>
         );
@@ -96,14 +140,16 @@ class Home extends React.Component {
                             <SubMenu key="showepimap" icon={<BarChartOutlined />} title="疫情查看">
                                 <Menu.Item key="worldmap">全国疫情图</Menu.Item>
                                 <Menu.Item key="ankemap">安科疫情图</Menu.Item>
+                                {role === 'admin' ? <Menu.Item key="ankemapmanage">安科确诊人数管理</Menu.Item> : null}
                             </SubMenu>
                             <SubMenu key="vaccines" icon={<HeatMapOutlined />} title="疫苗管理">
                                 <Menu.Item key="vacfind">疫苗查询</Menu.Item>
                                 <Menu.Item key="vacsub">疫苗订阅</Menu.Item>
+                                {role === 'admin' ? <Menu.Item key="showemail">订阅名单</Menu.Item> : null}
                             </SubMenu>
                             <SubMenu key="whereabouts" icon={<SplitCellsOutlined />} title="行踪管理">
                                 <Menu.Item key="leave">请假</Menu.Item>
-                                <Menu.Item key="approval">审批</Menu.Item>
+                                {role === 'admin' ? <Menu.Item key="approval">审批</Menu.Item> : null}
                             </SubMenu>
                             <Menu.Item key="personinfo" icon={<UserOutlined />}>个人信息</Menu.Item>
                         </Menu>

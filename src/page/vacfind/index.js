@@ -1,16 +1,17 @@
 import React from 'react'
 import { Map } from 'react-amap'
 import { Card } from 'antd'
-import { Cascader, Button } from 'antd';
+import { Cascader, Button, message } from 'antd';
 const AMAP_KEY = '8ca44e4b3ae1d3e186d6ebf4e89301ca'
-import { CityOption } from './config'
 import './index.css'
+import { toGetCityOption } from '../../axios/api'
 
 class VacFind extends React.Component {
     constructor() {
         super()
         this.state = {
             text: '',
+            cityOption: []
         }
         this.amapEvents = () => {
             return {
@@ -18,6 +19,25 @@ class VacFind extends React.Component {
                     this.mapInstance = mapInstance
                 }
             }
+        }
+    }
+
+    componentDidMount() {
+        this.getCityOption()
+    }
+
+    getCityOption = async () => {
+        try {
+            let { status, msg, data } = await toGetCityOption()
+            if (status === '200') {
+                this.setState({
+                    cityOption: data
+                })
+            } else {
+                message.error(msg)
+            }
+        } catch (e) {
+            console.log(e)
         }
     }
 
@@ -47,7 +67,7 @@ class VacFind extends React.Component {
     }
 
     render() {
-        const { text } = this.state
+        const { text, cityOption } = this.state
         const plugins = [
             'MapType',
             'Scale',
@@ -69,7 +89,7 @@ class VacFind extends React.Component {
                 {this.state.text}
                 &nbsp;
                 <Cascader
-                    options={CityOption}
+                    options={cityOption}
                     onChange={this.onChange}
                 >
                     <a href="#">选择城市</a>

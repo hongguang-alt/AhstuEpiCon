@@ -1,22 +1,83 @@
 import React from 'react'
-import { Card, Table, Space } from 'antd'
+import { Card, Table, Space, message } from 'antd'
+import { ToApproval, ToAgree, ToDeleteAgree } from '../../axios/api'
+
+const changeData = (data) => {
+    let newData = data.filter(item => {
+        return item.leaveInfo
+    })
+    return newData
+}
 
 class Approval extends React.Component {
+    constructor() {
+        super()
+        this.state = {
+            dataSource: []
+        }
+    }
+
+    componentDidMount() {
+        this.getApproval()
+    }
+
+    deleteAgree = async (sid) => {
+        try {
+            let { status, msg } = await ToDeleteAgree({ sid })
+            if (status === '200') {
+                this.getApproval()
+            } else {
+                message.error(msg)
+            }
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
+    getApproval = async () => {
+        try {
+            let { status, msg, data } = await ToApproval()
+            data['key'] = data._id
+            if (status == '200') {
+                this.setState({
+                    dataSource: changeData(data)
+                })
+            } else {
+                message.error(msg)
+            }
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
+
+    getAgree = async (sid, mystatus) => {
+        try {
+            let { status, msg } = await ToAgree({ sid, status: mystatus })
+            if (status === '200') {
+                this.getApproval()
+            } else {
+                message.error(msg)
+            }
+        } catch (e) {
+            console.log(e)
+        }
+    }
 
     render() {
-        const dataSource = [
-            {
-                date: ["2020-10-04 12:47:47", "2020-10-08 12:47:47"],
-                leaveiphone: "17305525291",
-                leavereason: "累了",
-                leavetype: "comleave",
-                name: '汪红光',
-                sid: '2702170119',
-                college: "信息与网络工程学院",
-                key: 1
-            }
-
-        ];
+        const { dataSource = [] } = this.state
+        // const dataSource = [
+        //     {
+        //         date: ["2020-10-04 12:47:47", "2020-10-08 12:47:47"],
+        //         leaveiphone: "17305525291",
+        //         leavereason: "累了",
+        //         leavetype: "comleave",
+        //         name: '汪红光',
+        //         sid: '2702170119',
+        //         college: "信息与网络工程学院",
+        //         key: 1
+        //     }
+        // ];
 
         const columns = [
             {
@@ -51,7 +112,7 @@ class Approval extends React.Component {
                 dataIndex: 'date',
                 key: 'date',
                 render: (text, record) => {
-                    return `${text[0]}———${text[1]}`
+                    return text && `${text[0]}———${text[1]}`
                 }
             },
             {
@@ -76,8 +137,10 @@ class Approval extends React.Component {
                 key: 'action',
                 render: (text, record) => (
                     <Space size="middle">
-                        <a >同意</a>
-                        <a>不同意</a>
+                        {record.status === 0 ? <div> <a onClick={() => { this.getAgree(record.sid, 1) }}>同意</a>
+                            <a onClick={() => { this.getAgree(record.sid, 2) }}>不同意</a></div> :
+                            <a onClick={() => { this.deleteAgree(record.sid) }}>销假</a>
+                        }
                     </Space>
                 ),
             },

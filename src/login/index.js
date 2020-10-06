@@ -3,7 +3,9 @@ import { Layout, Row, Col, Card, Carousel, Button } from 'antd';
 const { Header, Footer, Content } = Layout;
 import './index.css'
 import img from '../static/img/bg.jpg'
-
+import {
+    login
+} from '../axios/api'
 import {
     UserSwitchOutlined,
     ArrowRightOutlined,
@@ -50,13 +52,24 @@ class Login extends React.Component {
             user: ''
         }
     }
-    handleLogin = () => {
+    handleLogin = async () => {
         const { user, password } = this.state
         if (user === '' || password === '') {
             this.setState({ errorFont: "账号或者密码不能为空" })
             return
         }
-        this.props.history.push('/home/worldmap')
+        try {
+            let res = await login({ user, password })
+            const { status, token, msg } = res
+            if (status === '200') {
+                window.localStorage.setItem('token', token)
+                this.props.history.push('/home/worldmap')
+            } else {
+                this.setState({ errorFont: msg })
+            }
+        } catch (e) {
+            console.log(e)
+        }
     }
     render() {
         const { errorFont, user, password } = this.state
