@@ -48,22 +48,22 @@ class AnkeMap extends React.Component {
                 showLabel: !0,
                 text: ["高", "低"],
                 pieces: [{
-                    gt: 100,
-                    label: "> 100 人",
+                    gt: 500,
+                    label: "> 500 人",
                     color: "#7f1100"
                 }, {
-                    gte: 10,
-                    lte: 100,
-                    label: "10 - 100 人",
+                    gte: 100,
+                    lte: 500,
+                    label: "100 - 500 人",
                     color: "#ff5428"
                 }, {
-                    gte: 1,
-                    lt: 10,
-                    label: "1 - 9 人",
+                    gte: 10,
+                    lt: 100,
+                    label: "10 - 99 人",
                     color: "#ff8c71"
                 }, {
                     gt: 0,
-                    lt: 1,
+                    lt: 10,
                     label: "疑似",
                     color: "#ffd768"
                 }, {
@@ -83,7 +83,10 @@ class AnkeMap extends React.Component {
         }
         return <React.Fragment >
             <Card bordered={false} style={{ width: '100%' }}>
-                <h1 style={{ textAlign: 'center', fontSize: '24px' }}>全国疫情图</h1>
+                <h1 style={{ textAlign: 'center', fontSize: '24px' }}>
+                    全国疫情图
+                    <h6>（累计确诊人数）</h6>
+                </h1>
                 <ReactEcharts
                     option={options}
                     style={{ height: '500px', width: '100%' }}

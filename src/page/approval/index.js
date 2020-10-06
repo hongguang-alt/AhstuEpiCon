@@ -1,6 +1,6 @@
 import React from 'react'
 import { Card, Table, Space, message } from 'antd'
-import { ToApproval, ToAgree, ToDeleteAgree } from '../../axios/api'
+import { ToApproval, ToAgree, ToDeleteAgree, toSourceData } from '../../axios/api'
 
 const changeData = (data) => {
     let newData = data.filter(item => {
@@ -13,12 +13,14 @@ class Approval extends React.Component {
     constructor() {
         super()
         this.state = {
-            dataSource: []
+            dataSource: [],
+            filters: []
         }
     }
 
     componentDidMount() {
         this.getApproval()
+        this.getCollege()
     }
 
     deleteAgree = async (sid) => {
@@ -50,6 +52,27 @@ class Approval extends React.Component {
         }
     }
 
+    getCollege = async () => {
+        let arr = []
+        try {
+            let { status, msg, data } = await toSourceData()
+            if (status === '200') {
+                for (let i in data) {
+                    arr.push({
+                        text: data[i]['college'],
+                        value: data[i]['college']
+                    })
+                }
+                this.setState({
+                    filters: arr
+                })
+            } else {
+                message.error(msg)
+            }
+        } catch (e) {
+            console.log(e)
+        }
+    }
 
     getAgree = async (sid, mystatus) => {
         try {
@@ -65,20 +88,7 @@ class Approval extends React.Component {
     }
 
     render() {
-        const { dataSource = [] } = this.state
-        // const dataSource = [
-        //     {
-        //         date: ["2020-10-04 12:47:47", "2020-10-08 12:47:47"],
-        //         leaveiphone: "17305525291",
-        //         leavereason: "累了",
-        //         leavetype: "comleave",
-        //         name: '汪红光',
-        //         sid: '2702170119',
-        //         college: "信息与网络工程学院",
-        //         key: 1
-        //     }
-        // ];
-
+        const { dataSource = [], filters } = this.state
         const columns = [
             {
                 title: "姓名",
@@ -95,17 +105,12 @@ class Approval extends React.Component {
                 title: "学院",
                 key: 'college',
                 dataIndex: 'college',
-                filters: [
-                    {
-                        text: 'Joe',
-                        value: 'Joe',
-                    },
-                    {
-                        text: 'John',
-                        value: 'John',
-                    },
-                ],
-                onFilter: (value, record) => record.name.indexOf(value) === 0
+                filters: filters,
+                onFilter: (value, record) => {
+                    console.log(value, record)
+                    return record.college.indexOf(value) === 0
+                }
+
             },
             {
                 title: '请假时间',
@@ -137,8 +142,8 @@ class Approval extends React.Component {
                 key: 'action',
                 render: (text, record) => (
                     <Space size="middle">
-                        {record.status === 0 ? <div> <a onClick={() => { this.getAgree(record.sid, 1) }}>同意</a>
-                            <a onClick={() => { this.getAgree(record.sid, 2) }}>不同意</a></div> :
+                        {record.status === 0 ? <Space> <a onClick={() => { this.getAgree(record.sid, 1) }}>同意</a>
+                            <a onClick={() => { this.getAgree(record.sid, 2) }}>不同意</a></Space> :
                             <a onClick={() => { this.deleteAgree(record.sid) }}>销假</a>
                         }
                     </Space>
