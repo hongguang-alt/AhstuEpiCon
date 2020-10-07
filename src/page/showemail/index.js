@@ -10,7 +10,6 @@ class ShowEmail extends React.Component {
         }
     }
 
-
     componentDidMount() {
         this.getSource()
     }
@@ -21,9 +20,15 @@ class ShowEmail extends React.Component {
             for (let i in data) {
                 data[i]['key'] = data[i]['sid']
             }
+            let newdata = []
+            data.forEach(item => {
+                if (item.email) {
+                    newdata.push(item)
+                }
+            })
             if (status === '200') {
                 this.setState({
-                    dataSource: data
+                    dataSource: newdata
                 })
             } else {
                 message.error(msg)

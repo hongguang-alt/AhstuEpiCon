@@ -1,6 +1,7 @@
 import React from 'react'
 import { Card, Table, Space, message } from 'antd'
 import { ToApproval, ToAgree, ToDeleteAgree, toSourceData } from '../../axios/api'
+import { getRiskStatus } from '../../util/index'
 
 const changeData = (data) => {
     let newData = data.filter(item => {
@@ -118,6 +119,14 @@ class Approval extends React.Component {
                 key: 'date',
                 render: (text, record) => {
                     return text && `${text[0]}———${text[1]}`
+                }
+            },
+            {
+                title: '目的地',
+                dataIndex: 'destination',
+                key: 'destination',
+                render: (text, record) => {
+                    return text && `${text}(${getRiskStatus(record.risklevel)})`
                 }
             },
             {

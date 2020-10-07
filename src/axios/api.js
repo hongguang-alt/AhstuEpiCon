@@ -12,6 +12,11 @@ export const TXdataList = () => {
     return axios.get('/user/worldmap')
 }
 
+//获取全部的数据
+export const TogetMapListData = () => {
+    return axios.get('/user/worldmaplist')
+}
+
 //获取安科的疫情数据
 export const toSourceData = () => {
     return axios.get('/user/ankemap')
@@ -21,6 +26,7 @@ export const toSourceData = () => {
 export const toGetCityOption = () => {
     return axios.get('/user/vacfind')
 }
+
 
 //判断是否已经订阅
 export const toHasEmail = () => {
@@ -49,6 +55,20 @@ export const toLeave = (params) => {
 //请假状态的接口
 export const ToleaveStatus = () => {
     return axios.get('/user/leavestatus')
+}
+
+
+//获取目的地风险状态
+export const TogetDesStatus = (value) => {
+    return axios.get('/user/destination?destination=' + value)
+}
+
+
+//根据数组返回请假人风险的状态
+export const TogetArrBySeven = (params) => {
+    return axios.post('/user/sevendayperson', {
+        ...params
+    })
 }
 
 //获取审批状态的接口

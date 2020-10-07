@@ -12,6 +12,7 @@ import Approval from '../page/approval'
 import PersonInfo from '../page/personinfo'
 import AnkeMapManage from '../page/ankemapmanage'
 import ShowEmail from '../page/showemail'
+import ApprovalMap from '../page/approvalmap'
 import { secret } from '../config/config'
 import './index.css'
 import {
@@ -48,7 +49,8 @@ class Home extends React.Component {
         super()
         this.state = {
             collapsed: false,
-            role: 'student'
+            role: 'student',
+            name: ''
         }
     }
 
@@ -59,9 +61,10 @@ class Home extends React.Component {
 
     getManage = () => {
         let token = window.localStorage.getItem('token')
-        let { admin } = jwt.verify(token, secret)
+        let { admin, name } = jwt.verify(token, secret)
         this.setState({
-            role: admin
+            role: admin,
+            name: name
         })
     }
 
@@ -102,6 +105,12 @@ class Home extends React.Component {
                 } else {
                     return <div>404</div>
                 }
+            case 'approvalmap':
+                if (role === 'admin') {
+                    return <ApprovalMap />
+                } else {
+                    return <div>404</div>
+                }
             case 'personinfo': return <PersonInfo />
             default: return <div>404</div>
         }
@@ -113,7 +122,7 @@ class Home extends React.Component {
 
     render() {
         const { key } = this.props.match.params
-        const { role } = this.state
+        const { role, name } = this.state
         const menu = (
             <Menu>
                 <Menu.Item>
@@ -130,7 +139,7 @@ class Home extends React.Component {
                     </div>
                     <Dropdown overlay={menu}>
                         <a className="ant-dropdown-link" onClick={e => e.preventDefault()}>
-                            欢迎你，{'汪红光'} <DownOutlined />
+                            欢迎你，{name} <DownOutlined />
                         </a>
                     </Dropdown>
                 </Header>
@@ -138,9 +147,9 @@ class Home extends React.Component {
                     <Sider collapsible collapsed={this.state.collapsed} onCollapse={this.onCollapse} style={{ paddingTop: '20px' }}>
                         <Menu theme="dark" defaultSelectedKeys={[key]} defaultOpenKeys={[key]} mode="inline" onClick={this.handleMenu}>
                             <SubMenu key="showepimap" icon={<BarChartOutlined />} title="疫情查看">
-                                <Menu.Item key="worldmap">全国疫情图</Menu.Item>
+                                <Menu.Item key="worldmap">疫情图表</Menu.Item>
                                 <Menu.Item key="ankemap">安科疫情图</Menu.Item>
-                                {role === 'admin' ? <Menu.Item key="ankemapmanage">安科确诊人数管理</Menu.Item> : null}
+                                {role === 'admin' ? <Menu.Item key="ankemapmanage">安科生病人数管理</Menu.Item> : null}
                             </SubMenu>
                             <SubMenu key="vaccines" icon={<HeatMapOutlined />} title="疫苗管理">
                                 <Menu.Item key="vacfind">疫苗查询</Menu.Item>
@@ -150,6 +159,7 @@ class Home extends React.Component {
                             <SubMenu key="whereabouts" icon={<SplitCellsOutlined />} title="行踪管理">
                                 <Menu.Item key="leave">请假</Menu.Item>
                                 {role === 'admin' ? <Menu.Item key="approval">审批</Menu.Item> : null}
+                                {role === 'admin' ? <Menu.Item key="approvalmap">请假风险图</Menu.Item> : null}
                             </SubMenu>
                             <Menu.Item key="personinfo" icon={<UserOutlined />}>个人信息</Menu.Item>
                         </Menu>

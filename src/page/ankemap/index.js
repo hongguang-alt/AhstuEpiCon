@@ -51,7 +51,7 @@ class WordleMap extends React.Component {
                 name: '学院'
             },
             yAxis: {
-                name: "确诊人数"
+                name: "生病人数"
             },
             // Declare several bar series, each will be mapped
             // to a column of dataset.source by default.
@@ -63,7 +63,7 @@ class WordleMap extends React.Component {
         };
         return <React.Fragment >
             <Card bordered={false} style={{ width: '100%' }}>
-                <h1 style={{ textAlign: 'center', fontSize: '24px' }}>安科疫情图</h1>
+                <h1 style={{ textAlign: 'center', fontSize: '24px' }}>安科生病人数统计</h1>
                 <ReactEcharts
                     option={options}
                     style={{ height: '500px', width: '100%' }}

@@ -202,7 +202,7 @@ class AnkeMapManage extends React.Component {
             };
         })
         return <React.Fragment >
-            <Card bordered={false} style={{ width: '100%' }} title='安科疫情人数填报'>
+            <Card bordered={false} style={{ width: '100%' }} title='安科生病人数填报'>
                 <Form ref={this.formRef} component={false}>
                     <Table
                         dataSource={info}
