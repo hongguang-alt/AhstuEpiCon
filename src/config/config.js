@@ -1,5 +1,5 @@
-// export const URL = "http://hongguang.club:3005/api"
-export const URL = "http://localhost:3005/api"
+export const URL = "http://hongguang.club:3005/api"
+// export const URL = "http://localhost:3005/api"
 export const secret = "ahstuEpicWHG"
 export const YiBanAuth = "https://openapi.yiban.cn/oauth/authorize"
 export const CLIENTID = "891cfb29de4a0fbe"
